@@ -10,7 +10,7 @@ jobs:
     steps:
       -uses: actions/setup-go@v3
        with:
-        go-versin: ">=1.19"
+         go-version: '>=1.19'
       -uses: actions/checkout@v3
       -run: go test ./... -coverprofile=coverage.out
       -name: report coverage
