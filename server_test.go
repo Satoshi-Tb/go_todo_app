@@ -11,18 +11,22 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-func TestRun(t *testing.T) {
-	t.Skip("リファクタリング中")
+func TestServer_Run(t *testing.T) {
 	l, err := net.Listen("tcp", "localhost:0") //ポート番号に0を指定すると、利用可能なポート番号を動的アサイン
 	if err != nil {
 		t.Fatalf("failed to listen port %v", err)
 	}
 
+	mux := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, %s!", r.URL.Path[1:])
+	})
+
 	ctx, cancel := context.WithCancel(context.Background())
 	eg, ctx := errgroup.WithContext(ctx)
 
 	eg.Go(func() error {
-		return run(ctx)
+		s := NewServer(l, mux)
+		return s.Run(ctx)
 	})
 
 	in := "message"
