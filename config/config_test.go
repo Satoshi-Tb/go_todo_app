@@ -6,7 +6,7 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	wantPort := 80
+	wantPort := 8080
 
 	t.Setenv("PORT", fmt.Sprint(wantPort))
 
