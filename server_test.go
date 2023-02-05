@@ -12,7 +12,6 @@ import (
 )
 
 func TestServer_Run(t *testing.T) {
-
 	l, err := net.Listen("tcp", "localhost:0") //ポート番号に0を指定すると、利用可能なポート番号を動的アサイン
 	if err != nil {
 		t.Fatalf("failed to listen port %v", err)
