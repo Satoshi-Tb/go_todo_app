@@ -109,3 +109,28 @@ func prepareTasks(ctx context.Context, t *testing.T, con Execer) (entity.UserID,
 
 	return userID, wants
 }
+
+func TestRepository_DelTask(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	tx, err := testutil.OpenDBForTest(t).BeginTxx(ctx, nil)
+
+	//テスト後にロールバックする
+	t.Cleanup(func() { _ = tx.Rollback() })
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, wants := prepareTasks(ctx, t, tx)
+
+	sut := &Repository{}
+	cnt, err := sut.DelTask(ctx, tx, wants[0])
+	if err != nil {
+		t.Fatalf("unexected error: %v", err)
+	}
+
+	if cnt != 1 {
+		t.Errorf("deleted count not 1: %d", cnt)
+	}
+}

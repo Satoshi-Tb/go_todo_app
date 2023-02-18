@@ -6,13 +6,17 @@ import (
 	"github.com/Satoshi-Tb/go_todo_app/entity"
 )
 
-//go:generate go run github.com/matryer/moq -out moq_test.go . ListTasksService AddTaskService RegisterUserService LoginService
+//go:generate go run github.com/matryer/moq -out moq_test.go . ListTasksService AddTaskService RegisterUserService LoginService DelTaskService
 type ListTasksService interface {
 	ListTasks(ctx context.Context) (entity.Tasks, error)
 }
 
 type AddTaskService interface {
 	AddTask(ctx context.Context, title string) (*entity.Task, error)
+}
+
+type DelTaskService interface {
+	DelTask(ctx context.Context, taskID entity.TaskID) (int, error)
 }
 
 type RegisterUserService interface {

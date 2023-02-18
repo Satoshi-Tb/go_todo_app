@@ -393,3 +393,81 @@ func (mock *TokenGeneratorMock) GenerateTokenCalls() []struct {
 	mock.lockGenerateToken.RUnlock()
 	return calls
 }
+
+// Ensure, that TaskDeleterMock does implement TaskDeleter.
+// If this is not the case, regenerate this file with moq.
+var _ TaskDeleter = &TaskDeleterMock{}
+
+// TaskDeleterMock is a mock implementation of TaskDeleter.
+//
+//	func TestSomethingThatUsesTaskDeleter(t *testing.T) {
+//
+//		// make and configure a mocked TaskDeleter
+//		mockedTaskDeleter := &TaskDeleterMock{
+//			DelTaskFunc: func(ctx context.Context, db store.Execer, t *entity.Task) (int, error) {
+//				panic("mock out the DelTask method")
+//			},
+//		}
+//
+//		// use mockedTaskDeleter in code that requires TaskDeleter
+//		// and then make assertions.
+//
+//	}
+type TaskDeleterMock struct {
+	// DelTaskFunc mocks the DelTask method.
+	DelTaskFunc func(ctx context.Context, db store.Execer, t *entity.Task) (int, error)
+
+	// calls tracks calls to the methods.
+	calls struct {
+		// DelTask holds details about calls to the DelTask method.
+		DelTask []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Db is the db argument value.
+			Db store.Execer
+			// T is the t argument value.
+			T *entity.Task
+		}
+	}
+	lockDelTask sync.RWMutex
+}
+
+// DelTask calls DelTaskFunc.
+func (mock *TaskDeleterMock) DelTask(ctx context.Context, db store.Execer, t *entity.Task) (int, error) {
+	if mock.DelTaskFunc == nil {
+		panic("TaskDeleterMock.DelTaskFunc: method is nil but TaskDeleter.DelTask was just called")
+	}
+	callInfo := struct {
+		Ctx context.Context
+		Db  store.Execer
+		T   *entity.Task
+	}{
+		Ctx: ctx,
+		Db:  db,
+		T:   t,
+	}
+	mock.lockDelTask.Lock()
+	mock.calls.DelTask = append(mock.calls.DelTask, callInfo)
+	mock.lockDelTask.Unlock()
+	return mock.DelTaskFunc(ctx, db, t)
+}
+
+// DelTaskCalls gets all the calls that were made to DelTask.
+// Check the length with:
+//
+//	len(mockedTaskDeleter.DelTaskCalls())
+func (mock *TaskDeleterMock) DelTaskCalls() []struct {
+	Ctx context.Context
+	Db  store.Execer
+	T   *entity.Task
+} {
+	var calls []struct {
+		Ctx context.Context
+		Db  store.Execer
+		T   *entity.Task
+	}
+	mock.lockDelTask.RLock()
+	calls = mock.calls.DelTask
+	mock.lockDelTask.RUnlock()
+	return calls
+}

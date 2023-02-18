@@ -7,9 +7,12 @@ import (
 	"github.com/Satoshi-Tb/go_todo_app/store"
 )
 
-//go:generate go run github.com/matryer/moq -out moq_test.go . TaskAdder TaskLister UserRegister UserGetter TokenGenerator
+//go:generate go run github.com/matryer/moq -out moq_test.go . TaskAdder TaskLister UserRegister UserGetter TokenGenerator TaskDeleter
 type TaskAdder interface {
 	AddTask(ctx context.Context, db store.Execer, t *entity.Task) error
+}
+type TaskDeleter interface {
+	DelTask(ctx context.Context, db store.Execer, t *entity.Task) (int, error)
 }
 type TaskLister interface {
 	ListTasks(ctx context.Context, db store.Queryer, id entity.UserID) (entity.Tasks, error)
