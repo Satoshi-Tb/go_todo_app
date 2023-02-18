@@ -30,6 +30,10 @@ curl -X POST localhost:18000/login -d '{"user_name": "normal_user", "password":"
 export TODO_TOKEN=xxxx
 curl -X GET -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/admin
 
-//タスクを登録する
+//タスクを更新する
+export TODO_TOKEN=xxxx
+curl -X PUT -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/tasks -d '{"id": 33, "title": "update title", "status": "done"}'
+
+//タスクを削除する
 export TODO_TOKEN=xxxx
 curl -X DELETE -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/tasks -d '{"id": 33}'

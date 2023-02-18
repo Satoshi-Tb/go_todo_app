@@ -134,3 +134,39 @@ func TestRepository_DelTask(t *testing.T) {
 		t.Errorf("deleted count not 1: %d", cnt)
 	}
 }
+
+func TestRepository_UpdateTask(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	tx, err := testutil.OpenDBForTest(t).BeginTxx(ctx, nil)
+
+	//テスト後にロールバックする
+	t.Cleanup(func() { _ = tx.Rollback() })
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	wantUserID, wants := prepareTasks(ctx, t, tx)
+	t.Logf("UserID %d", wantUserID)
+	wants[0].Title = "new title"
+	wants[0].Status = entity.TaskStatusDone
+	wants[1].Status = entity.TaskStatusDoing
+
+	sut := &Repository{
+		Clocker: clock.FixedClocker{},
+	}
+
+	for i, w := range wants {
+		t.Logf("[%d] update item: %+v", i, w)
+		cnt, err := sut.UpdateTask(ctx, tx, w)
+		if err != nil {
+			t.Fatalf("[%d] unexected error: %v", i, err)
+		}
+
+		if cnt != 1 {
+			t.Errorf("[%d] updated count not 1, but %d", i, cnt)
+		}
+
+	}
+}
