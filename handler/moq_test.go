@@ -230,3 +230,153 @@ func (mock *RegisterUserServiceMock) RegisterUserCalls() []struct {
 	mock.lockRegisterUser.RUnlock()
 	return calls
 }
+
+// Ensure, that LoginServiceMock does implement LoginService.
+// If this is not the case, regenerate this file with moq.
+var _ LoginService = &LoginServiceMock{}
+
+// LoginServiceMock is a mock implementation of LoginService.
+//
+//	func TestSomethingThatUsesLoginService(t *testing.T) {
+//
+//		// make and configure a mocked LoginService
+//		mockedLoginService := &LoginServiceMock{
+//			LoginFunc: func(ctx context.Context, name string, pw string) (string, error) {
+//				panic("mock out the Login method")
+//			},
+//		}
+//
+//		// use mockedLoginService in code that requires LoginService
+//		// and then make assertions.
+//
+//	}
+type LoginServiceMock struct {
+	// LoginFunc mocks the Login method.
+	LoginFunc func(ctx context.Context, name string, pw string) (string, error)
+
+	// calls tracks calls to the methods.
+	calls struct {
+		// Login holds details about calls to the Login method.
+		Login []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Name is the name argument value.
+			Name string
+			// Pw is the pw argument value.
+			Pw string
+		}
+	}
+	lockLogin sync.RWMutex
+}
+
+// Login calls LoginFunc.
+func (mock *LoginServiceMock) Login(ctx context.Context, name string, pw string) (string, error) {
+	if mock.LoginFunc == nil {
+		panic("LoginServiceMock.LoginFunc: method is nil but LoginService.Login was just called")
+	}
+	callInfo := struct {
+		Ctx  context.Context
+		Name string
+		Pw   string
+	}{
+		Ctx:  ctx,
+		Name: name,
+		Pw:   pw,
+	}
+	mock.lockLogin.Lock()
+	mock.calls.Login = append(mock.calls.Login, callInfo)
+	mock.lockLogin.Unlock()
+	return mock.LoginFunc(ctx, name, pw)
+}
+
+// LoginCalls gets all the calls that were made to Login.
+// Check the length with:
+//
+//	len(mockedLoginService.LoginCalls())
+func (mock *LoginServiceMock) LoginCalls() []struct {
+	Ctx  context.Context
+	Name string
+	Pw   string
+} {
+	var calls []struct {
+		Ctx  context.Context
+		Name string
+		Pw   string
+	}
+	mock.lockLogin.RLock()
+	calls = mock.calls.Login
+	mock.lockLogin.RUnlock()
+	return calls
+}
+
+// Ensure, that DelTaskServiceMock does implement DelTaskService.
+// If this is not the case, regenerate this file with moq.
+var _ DelTaskService = &DelTaskServiceMock{}
+
+// DelTaskServiceMock is a mock implementation of DelTaskService.
+//
+//	func TestSomethingThatUsesDelTaskService(t *testing.T) {
+//
+//		// make and configure a mocked DelTaskService
+//		mockedDelTaskService := &DelTaskServiceMock{
+//			DelTaskFunc: func(ctx context.Context, taskID entity.TaskID) (int, error) {
+//				panic("mock out the DelTask method")
+//			},
+//		}
+//
+//		// use mockedDelTaskService in code that requires DelTaskService
+//		// and then make assertions.
+//
+//	}
+type DelTaskServiceMock struct {
+	// DelTaskFunc mocks the DelTask method.
+	DelTaskFunc func(ctx context.Context, taskID entity.TaskID) (int, error)
+
+	// calls tracks calls to the methods.
+	calls struct {
+		// DelTask holds details about calls to the DelTask method.
+		DelTask []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// TaskID is the taskID argument value.
+			TaskID entity.TaskID
+		}
+	}
+	lockDelTask sync.RWMutex
+}
+
+// DelTask calls DelTaskFunc.
+func (mock *DelTaskServiceMock) DelTask(ctx context.Context, taskID entity.TaskID) (int, error) {
+	if mock.DelTaskFunc == nil {
+		panic("DelTaskServiceMock.DelTaskFunc: method is nil but DelTaskService.DelTask was just called")
+	}
+	callInfo := struct {
+		Ctx    context.Context
+		TaskID entity.TaskID
+	}{
+		Ctx:    ctx,
+		TaskID: taskID,
+	}
+	mock.lockDelTask.Lock()
+	mock.calls.DelTask = append(mock.calls.DelTask, callInfo)
+	mock.lockDelTask.Unlock()
+	return mock.DelTaskFunc(ctx, taskID)
+}
+
+// DelTaskCalls gets all the calls that were made to DelTask.
+// Check the length with:
+//
+//	len(mockedDelTaskService.DelTaskCalls())
+func (mock *DelTaskServiceMock) DelTaskCalls() []struct {
+	Ctx    context.Context
+	TaskID entity.TaskID
+} {
+	var calls []struct {
+		Ctx    context.Context
+		TaskID entity.TaskID
+	}
+	mock.lockDelTask.RLock()
+	calls = mock.calls.DelTask
+	mock.lockDelTask.RUnlock()
+	return calls
+}

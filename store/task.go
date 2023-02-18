@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"log"
 
 	"github.com/Satoshi-Tb/go_todo_app/entity"
 )
@@ -34,4 +35,20 @@ func (r *Repository) AddTask(ctx context.Context, db Execer, t *entity.Task) err
 
 	t.ID = entity.TaskID(id)
 	return nil
+}
+
+func (r *Repository) DelTask(ctx context.Context, db Execer, t *entity.Task) (int, error) {
+	sql := `DELETE FROM task WHERE id = ? AND user_id = ?`
+	log.Print("DelTask store start")
+	result, err := db.ExecContext(ctx, sql, t.ID, t.UserID)
+	if err != nil {
+		return -1, err
+	}
+
+	cnt, err := result.RowsAffected()
+	if err != nil {
+		return -1, err
+	}
+
+	return int(cnt), nil
 }

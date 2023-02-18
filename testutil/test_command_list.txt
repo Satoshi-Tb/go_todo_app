@@ -29,3 +29,7 @@ curl -X POST localhost:18000/login -d '{"user_name": "normal_user", "password":"
 //一般ユーザー権限で/adminエンドポイントにアクセスする
 export TODO_TOKEN=xxxx
 curl -X GET -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/admin
+
+//タスクを登録する
+export TODO_TOKEN=xxxx
+curl -X DELETE -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/tasks -d '{"id": 33}'
