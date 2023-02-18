@@ -1,0 +1,31 @@
+//アクセストークンの発行（管理者権限）
+curl -X POST localhost:18000/register -d '{"name": "admin_user", "password":"test", "role":"admin"}'
+
+//ログイン(パスワードエラー)
+curl -X POST localhost:18000/login -d '{"user_name": "admin_user", "password":"test?"}'
+
+//ログイン
+curl -X POST localhost:18000/login -d '{"user_name": "admin_user", "password":"test"}'
+
+//トークン無しでタスク登録する
+curl -X POST localhost:18000/tasks -d @./handler/testdata/add_task/ok_req.json.golden
+
+//タスクを登録する
+export TODO_TOKEN=xxxx
+curl -X POST -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/tasks -d @./handler/testdata/add_task/ok_req.json.golden
+
+//タスクを一覧表示する
+curl -X GET -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/tasks -d @./handler/testdata/add_task/ok_req.json.golden
+
+//管理者権限で/adminエンドポイントにアクセスする
+curl -X GET -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/admin
+
+//アクセストークンの発行（一般ユーザー権限）
+curl -X POST localhost:18000/register -d '{"name": "normal_user", "password":"test", "role":"user"}'
+
+//ログイン
+curl -X POST localhost:18000/login -d '{"user_name": "normal_user", "password":"test"}'
+
+//一般ユーザー権限で/adminエンドポイントにアクセスする
+export TODO_TOKEN=xxxx
+curl -X GET -H "Authorization: Bearer $TODO_TOKEN" localhost:18000/admin
